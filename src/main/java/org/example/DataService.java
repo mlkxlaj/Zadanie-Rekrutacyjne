@@ -22,12 +22,10 @@ import java.util.Random;
 
 public class DataService {
 
-    PersonBuilder personBuilder;
-    DataService dataService;
+    PersonBuilder personBuilder = new PersonBuilder();
 
-    public DataService(){
+    public DataService() {
         this.personBuilder = new PersonBuilder();
-        this.dataService = new DataService();
     }
 
     public void readFromFiles(File dir) throws ParserConfigurationException, IOException, SAXException {
@@ -72,15 +70,10 @@ public class DataService {
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.newDocument();
 
-        Element rootElement = doc.createElement(person.getClass().getSimpleName().toLowerCase());
+        Element rootElement = doc.createElement("person");
         doc.appendChild(rootElement);
 
-        appendChildElement(doc, rootElement, "personId", person.getPersonId());
-        appendChildElement(doc, rootElement, "firstName", person.getFirstName());
-        appendChildElement(doc, rootElement, "lastName", person.getLastName());
-        appendChildElement(doc, rootElement, "mobile", person.getMobile());
-        appendChildElement(doc, rootElement, "email", person.getEmail());
-        appendChildElement(doc, rootElement, "pesel", person.getPesel());
+        personBuilder.appendPersonDetailsToElement(doc, rootElement, person);
 
         savePersonToXML(doc, file);
 
@@ -112,7 +105,13 @@ public class DataService {
         return file.exists() && file.delete();
     }
 
-    public void modifyPersonInFile(Person person) throws ParserConfigurationException, TransformerException, SAXException, IOException {
+    public void modifyPersonInFile(String id, Person updatedPerson) throws ParserConfigurationException, TransformerException, SAXException, IOException {
+        Person person = EmployeesService.employeesMap.keySet().stream()
+                .filter(p -> p.getPersonId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Person with the given ID does not exist"));
+        updatedPerson.setPersonId(id);
+
         String fileName = EmployeesService.employeesMap.get(person);
         String directory = "./data/" + (person.getType().toString().toLowerCase() + "/");
         File file = new File(directory + fileName);
@@ -127,19 +126,15 @@ public class DataService {
 
         Element rootElement = doc.getDocumentElement();
 
-        rootElement.getElementsByTagName("personId").item(0).setTextContent(person.getPersonId());
-        rootElement.getElementsByTagName("firstName").item(0).setTextContent(person.getFirstName());
-        rootElement.getElementsByTagName("lastName").item(0).setTextContent(person.getLastName());
-        rootElement.getElementsByTagName("mobile").item(0).setTextContent(person.getMobile());
-        rootElement.getElementsByTagName("email").item(0).setTextContent(person.getEmail());
-        rootElement.getElementsByTagName("pesel").item(0).setTextContent(person.getPesel());
+        personBuilder.updatePersonInElement(rootElement, updatedPerson);
 
         savePersonToXML(doc, file);
     }
 
+
     private void appendChildElement(Document doc, Element parent, String name, String value) {
         Element child = doc.createElement(name);
-        child.appendChild(doc.createTextNode(value));
+        child.setTextContent(value);
         parent.appendChild(child);
     }
 
@@ -152,7 +147,6 @@ public class DataService {
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(file);
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.transform(source, result);
     }
 }

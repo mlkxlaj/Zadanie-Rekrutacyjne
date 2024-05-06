@@ -4,7 +4,7 @@
     <personId>2</personId>
     <firstName>Alice</firstName>
     <lastName>Smith</lastName>
-    <mobile>987654321</mobile>
+    <mobile>+3456789012</mobile>
     <email>alice.smith@example.com</email>
-    <pesel>98765432109</pesel>
+    <pesel>34567890123</pesel>
 </person>

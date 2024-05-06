@@ -4,7 +4,7 @@
     <personId>1</personId>
     <firstName>John</firstName>
     <lastName>Doe</lastName>
-    <mobile>123456789</mobile>
+    <mobile>+1234567890</mobile>
     <email>john.doe@example.com</email>
     <pesel>12345678901</pesel>
 </person>

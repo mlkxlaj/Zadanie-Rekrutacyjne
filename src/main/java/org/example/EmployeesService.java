@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class EmployeesService {
     public static Map<Person, String> employeesMap = new HashMap<>();
-    private final DataService dataService;
+    private DataService dataService;
     //testy parametryzowane
 
     public EmployeesService() {
@@ -56,14 +56,16 @@ public class EmployeesService {
         return false;
     }
 
-    public void modify(Person person) throws
+    public void modify(Person person, String id) throws
             ParserConfigurationException, IOException, TransformerException, SAXException {
-        if (exists(person)) {
-            throw new IllegalArgumentException("main.java.Person with the same personId, mobile, pesel, and email already exists");
-        }
 
         employeesMap.keySet().stream()
-                .filter(p -> p.getPersonId().equals(person.getPersonId()))
+                .filter(p -> p.getPersonId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Person with the given ID does not exist"));
+
+        employeesMap.keySet().stream()
+                .filter(p -> p.getPersonId().equals(id))
                 .findFirst()
                 .ifPresent(p -> {
                     p.setFirstName(person.getFirstName());
@@ -74,14 +76,13 @@ public class EmployeesService {
                     p.setEmail(person.getEmail());
                 });
 
-        dataService.modifyPersonInFile(person);
+        dataService.modifyPersonInFile(id, person);
     }
 
     public boolean exists(Person person) {
         return employeesMap.keySet().stream()
-                .anyMatch(p -> p.getPersonId().equals(person.getPersonId()) &&
-                        p.getMobile().equals(person.getMobile()) &&
-                        p.getPesel().equals(person.getPesel()) &&
+                .anyMatch(p -> p.getMobile().equals(person.getMobile()) ||
+                        p.getPesel().equals(person.getPesel()) ||
                         p.getEmail().equals(person.getEmail()));
     }
 

@@ -15,11 +15,12 @@ public class Person {
         if
         (
                 type == null ||
-                isFirstNameValid(firstName) ||
-                isLastNameValid(lastName) ||
-                isMobileValid(mobile) ||
-                isPeselValid(pesel) ||
-                isEmailValid(email)
+                        isFirstNameValid(firstName) ||
+                        isLastNameValid(lastName) ||
+                        isMobileValid(mobile) ||
+                        isEmailValid(email) ||
+                        isPeselValid(pesel)
+
         ) {
             throw new IllegalArgumentException("Invalid parameters");
         }
@@ -32,40 +33,25 @@ public class Person {
         this.pesel = pesel;
     }
 
-    public  boolean isFirstNameValid(String firstName) {
+    public boolean isFirstNameValid(String firstName) {
         return firstName == null || firstName.trim().isEmpty();
     }
 
-    public  boolean isLastNameValid(String lastName) {
+    public boolean isLastNameValid(String lastName) {
         return lastName == null || lastName.trim().isEmpty();
     }
 
-    public  boolean isMobileValid(String mobile) {
+    public boolean isMobileValid(String mobile) {
         String allCountryRegex = "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$";
         Pattern pattern = Pattern.compile(allCountryRegex);
         return mobile == null || !pattern.matcher(mobile).matches();
     }
 
-    public  boolean isPeselValid(String pesel) {
-        if (pesel == null || pesel.length() != 11) {
-            return true;
-        }
-
-        int sum = 0;
-        int[] weights = {1, 3, 7, 9, 1, 3, 7, 9, 1, 3};
-        for (int i = 0; i < weights.length; i++) {
-            sum += weights[i] * Character.getNumericValue(pesel.charAt(i));
-        }
-
-        int lastDigit = 10 - (sum % 10);
-        if (lastDigit == 10) {
-            lastDigit = 0;
-        }
-
-        return lastDigit != Character.getNumericValue(pesel.charAt(10));
+    public boolean isPeselValid(String pesel) {
+        return pesel == null || pesel.length() != 11;
     }
 
-    public  boolean isEmailValid(String email) {
+    public boolean isEmailValid(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
         Pattern pattern = Pattern.compile(emailRegex);
         return email == null || !pattern.matcher(email).matches();
@@ -150,5 +136,18 @@ public class Person {
 
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "personId='" + personId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", email='" + email + '\'' +
+                ", pesel='" + pesel + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

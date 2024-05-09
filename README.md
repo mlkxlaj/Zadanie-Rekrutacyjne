@@ -1,3 +1,6 @@
+W zadaniu można skorzystać jedynie z komponentów Java SE.
+
+
 Firma posiada bazę danych opartą o pliki XML. Każdy z plików XML zawiera osobne dane pracownika.
 
  

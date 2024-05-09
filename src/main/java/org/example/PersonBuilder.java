@@ -7,18 +7,16 @@ import java.io.File;
 
 public class PersonBuilder {
     public Person build(File file, Element node) {
-        Element eElement = node;
-
         Person person = new Person
                 (
-                        file.getPath().contains("External") ? Type.EXTERNAL : Type.INTERNAL,
-                        eElement.getElementsByTagName("firstName").item(0).getTextContent(),
-                        eElement.getElementsByTagName("lastName").item(0).getTextContent(),
-                        eElement.getElementsByTagName("mobile").item(0).getTextContent(),
-                        eElement.getElementsByTagName("pesel").item(0).getTextContent(),
-                        eElement.getElementsByTagName("email").item(0).getTextContent()
+                        file.getPath().contains("external") ? Type.EXTERNAL : Type.INTERNAL,
+                        node.getElementsByTagName("firstName").item(0).getTextContent(),
+                        node.getElementsByTagName("lastName").item(0).getTextContent(),
+                        node.getElementsByTagName("mobile").item(0).getTextContent(),
+                        node.getElementsByTagName("pesel").item(0).getTextContent(),
+                        node.getElementsByTagName("email").item(0).getTextContent()
                 );
-        person.setPersonId(eElement.getElementsByTagName("personId").item(0).getTextContent());
+        person.setPersonId(node.getElementsByTagName("personId").item(0).getTextContent());
         return person;
     }
 
